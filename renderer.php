@@ -36,6 +36,8 @@ defined('MOODLE_INTERNAL') || die();
  */
 class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
+    /* Visiblement ça apparaît dans une prévisualisation de la question */
+
     /**
      * Display the manual comment, and a link to edit it, if appropriate.
      *
@@ -57,6 +59,8 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             return 'test string output';
         }
     }
+
+    /* Visiblement ça apparaît dans une prévisualisation de la question */
 
     public function manual_comment_view(question_attempt $qa, question_display_options $options) {
         $output = '';
