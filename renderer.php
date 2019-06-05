@@ -36,6 +36,145 @@ defined('MOODLE_INTERNAL') || die();
  */
 class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
+
+    /**
+     * Generate some HTML (which may be blank) that appears in the outcome area,
+     * after the question-type generated output.
+     *
+     * For example, the CBM models use this to display an explanation of the score
+     * adjustment that was made based on the certainty selected.
+     *
+     * @param question_attempt $qa a question attempt.
+     * @param question_display_options $options controls what should and should not be displayed.
+     * @return string HTML fragment.
+     ***/
+    public function feedback(question_attempt $qa, question_display_options $options) {
+        return '';
+    }
+
+    public function manual_comment_fields(question_attempt $qa, question_display_options $options) {
+        global $CFG;
+
+        require_once($CFG->dirroot.'/lib/filelib.php');
+        require_once($CFG->dirroot.'/repository/lib.php');
+
+        /*
+
+        $inputname = $qa->get_behaviour_field_name('comment');
+        $id = $inputname . '_id';
+        list($commenttext, $commentformat, $commentstep) = $qa->get_current_manual_comment();
+
+        $editor = editors_get_preferred_editor($commentformat);
+        $strformats = format_text_menu();
+        $formats = $editor->get_supported_formats();
+        foreach ($formats as $fid) {
+            $formats[$fid] = $strformats[$fid];
+        }
+
+        $draftitemareainputname = $qa->get_behaviour_field_name('comment:itemid');
+        $draftitemid = optional_param($draftitemareainputname, false, PARAM_INT);
+
+        if (!$draftitemid && $commentstep === null) {
+            $commenttext = '';
+            $draftitemid = file_get_unused_draft_itemid();
+        } else if (!$draftitemid) {
+            list($draftitemid, $commenttext) = $commentstep->prepare_response_files_draft_itemid_with_text(
+                'bf_comment', $options->context->id, $commenttext);
+        }
+
+        $editor->set_text($commenttext);
+        $editor->use_editor($id, question_utils::get_editor_options($options->context),
+            question_utils::get_filepicker_options($options->context, $draftitemid));
+
+        $commenteditor = html_writer::tag('div', html_writer::tag('textarea', s($commenttext),
+            array('id' => $id, 'name' => $inputname, 'rows' => 10, 'cols' => 60)));
+
+        $attributes = ['type'  => 'hidden', 'name'  => $draftitemareainputname, 'value' => $draftitemid];
+        $commenteditor .= html_writer::empty_tag('input', $attributes);
+
+        $editorformat = '';
+        if (count($formats) == 1) {
+            reset($formats);
+            $editorformat .= html_writer::empty_tag('input', array('type' => 'hidden',
+                'name' => $inputname . 'format', 'value' => key($formats)));
+        } else {
+            $editorformat = html_writer::start_tag('div', array('class' => 'fitem'));
+            $editorformat .= html_writer::start_tag('div', array('class' => 'fitemtitle'));
+            $editorformat .= html_writer::tag('label', get_string('format'), array('for'=>'menu'.$inputname.'format'));
+            $editorformat .= html_writer::end_tag('div');
+            $editorformat .= html_writer::start_tag('div', array('class' => 'felement fhtmleditor'));
+            $editorformat .= html_writer::select($formats, $inputname.'format', $commentformat, '');
+            $editorformat .= html_writer::end_tag('div');
+            $editorformat .= html_writer::end_tag('div');
+        }
+
+        $comment = html_writer::tag('div', html_writer::tag('div',
+                html_writer::tag('label', get_string('comment', 'question'),
+                    array('for' => $id)), array('class' => 'fitemtitle')) .
+            html_writer::tag('div', $commenteditor, array('class' => 'felement fhtmleditor', 'data-fieldtype' => "editor")),
+            array('class' => 'fitem'));
+        $comment .= $editorformat;
+
+        $mark = '';
+        if ($qa->get_max_mark()) {
+            $currentmark = $qa->get_current_manual_mark();
+            $maxmark = $qa->get_max_mark();
+
+            $fieldsize = strlen($qa->format_max_mark($options->markdp)) - 1;
+            $markfield = $qa->get_behaviour_field_name('mark');
+
+            $attributes = array(
+                'type' => 'text',
+                'size' => $fieldsize,
+                'name' => $markfield,
+                'id'=> $markfield
+            );
+            if (!is_null($currentmark)) {
+                $attributes['value'] = $currentmark;
+            }
+
+            $markrange = html_writer::empty_tag('input', array(
+                    'type' => 'hidden',
+                    'name' => $qa->get_behaviour_field_name('maxmark'),
+                    'value' => $maxmark,
+                )) . html_writer::empty_tag('input', array(
+                    'type' => 'hidden',
+                    'name' => $qa->get_control_field_name('minfraction'),
+                    'value' => $qa->get_min_fraction(),
+                )) . html_writer::empty_tag('input', array(
+                    'type' => 'hidden',
+                    'name' => $qa->get_control_field_name('maxfraction'),
+                    'value' => $qa->get_max_fraction(),
+                ));
+
+            $error = $qa->validate_manual_mark($currentmark);
+            $errorclass = '';
+            if ($error !== '') {
+                $erroclass = ' error';
+                $error = html_writer::tag('span', $error,
+                        array('class' => 'error')) . html_writer::empty_tag('br');
+            }
+
+            $a = new stdClass();
+            $a->max = $qa->format_max_mark($options->markdp);
+            $a->mark = html_writer::empty_tag('input', $attributes);
+            $mark = html_writer::tag('div', html_writer::tag('div',
+                    html_writer::tag('label', get_string('mark', 'question'),
+                        array('for' => $markfield)),
+                    array('class' => 'fitemtitle')) .
+                html_writer::tag('div', $error . get_string('xoutofmax', 'question', $a) .
+                    $markrange, array('class' => 'felement ftext' . $errorclass)
+                ), array('class' => 'fitem'));
+        }
+
+        return html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
+            array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
+
+        */
+
+        return html_writer::tag('div', 'asdasd2222asd', array('class' => 'fcontainer clearfix'));
+    }
+
     /* Visiblement ça apparaît dans une prévisualisation de la question */
 
     /**
