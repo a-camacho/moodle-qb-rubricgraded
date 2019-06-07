@@ -36,7 +36,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
-
     /**
      * Generate some HTML (which may be blank) that appears in the outcome area,
      * after the question-type generated output.
@@ -57,8 +56,6 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         require_once($CFG->dirroot.'/lib/filelib.php');
         require_once($CFG->dirroot.'/repository/lib.php');
-
-        /*
 
         $inputname = $qa->get_behaviour_field_name('comment');
         $id = $inputname . '_id';
@@ -167,12 +164,15 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
                 ), array('class' => 'fitem'));
         }
 
-        return html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
+        /* TODO: Change hard-coded strings to language based strings */
+
+        $prefix =   html_writer::tag('div', html_writer::tag('div',
+                html_writer::tag('label', 'Rubrics') .
+                        html_writer::tag('div', '<i>Here will come the rubrics grading strategy</i>')));
+
+        return $prefix . html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
 
-        */
-
-        return html_writer::tag('div', 'asdasd2222asd', array('class' => 'fcontainer clearfix'));
     }
 
     /* Visiblement ça apparaît dans une prévisualisation de la question */
@@ -186,16 +186,16 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
      */
     public function manual_comment(question_attempt $qa, question_display_options $options) {
         if ($options->manualcomment == question_display_options::EDITABLE) {
-            // return $this->manual_comment_fields($qa, $options);
-            return 'test string output';
+            return $this->manual_comment_fields($qa, $options);
+            // return 'shows when manual_comment is editable';
 
         } else if ($options->manualcomment == question_display_options::VISIBLE) {
-            // return $this->manual_comment_view($qa, $options);
-            return 'test string output';
+            return $this->manual_comment_view($qa, $options);
+            // return 'shows when we can view manual comment but not edit it';
 
         } else {
             // return '';
-            return 'test string output';
+            return 'show nothing if we can\'t VIEW or EDIT manual comment';
         }
     }
 
@@ -208,7 +208,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         }
         if ($options->manualcommentlink) {
             $url = new moodle_url($options->manualcommentlink, array('slot' => $qa->get_slot()));
-            $link = $this->output->action_link($url, 'asdasdasdasdd',
+            $link = $this->output->action_link($url, get_string('commentormark', 'question'),
                 new popup_action('click', $url, 'commentquestion',
                     array('width' => 600, 'height' => 800)));
             $output .= html_writer::tag('div', $link, array('class' => 'commentlink'));
