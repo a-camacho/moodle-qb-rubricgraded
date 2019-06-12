@@ -26,6 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot . '/grade/grading/form/rubric/renderer.php');
+require_once($CFG->dirroot . '/grade/grading/form/rubric/lib.php');
 
 /**
  * Renderer for outputting parts of a question belonging to the manual
@@ -52,7 +54,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
     }
 
     public function manual_comment_fields(question_attempt $qa, question_display_options $options) {
-        global $CFG;
+        global $CFG, $PAGE;
 
         require_once($CFG->dirroot.'/lib/filelib.php');
         require_once($CFG->dirroot.'/repository/lib.php');
@@ -170,7 +172,49 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
                 html_writer::tag('label', 'Rubrics') .
                         html_writer::tag('div', '<i>Here will come the rubrics grading strategy</i>')));
 
-        return $prefix . html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
+        /* TODO : Find if there is a cleaner (more up) way to show the rubrics */
+        $cmid = $PAGE->cm->id;
+
+        $rubric_renderer = new gradingform_rubric_renderer($PAGE, '');
+            $criteria = array(
+                            array(  'id' => '1',
+                                    'sortorder' => '1',
+                                    'description' => 'Criterion1',
+                                    'descriptionformat' => '0',
+                                    'levels' => array(
+                                        array( 'id' => 1, 'score' => floatval(0), 'definition' => 'Lev1', 'definitionformat' => '0'),
+                                        array( 'id' => 2, 'score' => floatval(1), 'definition' => 'Lev2', 'definitionformat' => '0'),
+                                        array( 'id' => 3, 'score' => floatval(2), 'definition' => 'Lev3', 'definitionformat' => '0'),
+                                    )
+                            ),
+                            array(  'id' => '2',
+                                    'sortorder' => '2',
+                                    'description' => 'Criterion2',
+                                    'descriptionformat' => '0',
+                                    'levels' => array(
+                                        array( 'id' => 4, 'score' => floatval(0), 'definition' => 'Lav1', 'definitionformat' => '0'),
+                                        array( 'id' => 5, 'score' => floatval(1), 'definition' => 'Lav2', 'definitionformat' => '0'),
+                                        array( 'id' => 6, 'score' => floatval(2), 'definition' => 'Lav3', 'definitionformat' => '0'),
+                                    )
+                            )
+                        );
+            $options = array(   'sortlevelsasc' => '1',
+                                'lockzeropoints' => '1',
+                                'alwaysshowdefinition' => '1',
+                                'showdescriptionteacher' => '1',
+                                'showdescriptionstudent' => '1',
+                                'showscoreteacher' => '1',
+                                'showscorestudent' => '1',
+                                'enableremarks' => '1',
+                                'showremarksstudent' => '1',
+                            );
+            $mode = 4;
+            $elementname = 'mycustomname';
+            $values = null;
+
+        $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
+
+        return $prefix . $rubric_editor . html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
 
     }
