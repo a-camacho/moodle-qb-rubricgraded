@@ -109,6 +109,7 @@ class qbehaviour_rubricgraded extends question_behaviour_with_save {
         }
 
         $response = $this->qa->get_last_step()->get_qt_data();
+
         if (!$this->question->is_gradable_response($response)) {
             $pendingstep->set_state(question_state::$gaveup);
         } else {
@@ -117,4 +118,5 @@ class qbehaviour_rubricgraded extends question_behaviour_with_save {
         $pendingstep->set_new_response_summary($this->question->summarise_response($response));
         return question_attempt::KEEP;
     }
+
 }
