@@ -180,30 +180,10 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         $rubric_renderer = new gradingform_rubric_renderer($PAGE, '');
 
-            $criteria = array(
-                            array(  'id' => '1',
-                                    'sortorder' => '1',
-                                    'description' => 'Criterion1',
-                                    'descriptionformat' => '0',
-                                    'levels' => array(
-                                        array( 'id' => 1, 'score' => floatval(0), 'definition' => 'Lev1', 'definitionformat' => '0'),
-                                        array( 'id' => 2, 'score' => floatval(1), 'definition' => 'Lev2', 'definitionformat' => '0'),
-                                        array( 'id' => 3, 'score' => floatval(2), 'definition' => 'Lev3', 'definitionformat' => '0'),
-                                    )
-                            ),
-                            array(  'id' => '2',
-                                    'sortorder' => '2',
-                                    'description' => 'Criterion2',
-                                    'descriptionformat' => '0',
-                                    'levels' => array(
-                                        array( 'id' => 4, 'score' => floatval(0), 'definition' => 'Lav1', 'definitionformat' => '0'),
-                                        array( 'id' => 5, 'score' => floatval(1), 'definition' => 'Lav2', 'definitionformat' => '0'),
-                                        array( 'id' => 6, 'score' => floatval(2), 'definition' => 'Lav3', 'definitionformat' => '0'),
-                                    )
-                            )
-                        );
+            $criteria = $definition->rubric_criteria;
 
-            $criteria2 = $definition->rubric_criteria;
+            // This gets options from rubric, in a string format
+            // $options = $definition->options;
 
             $options = array(   'sortlevelsasc' => '1',
                                 'lockzeropoints' => '1',
@@ -219,7 +199,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             $elementname = 'mycustomname';
             $values = null;
 
-        $rubric_editor = $rubric_renderer->display_rubric($criteria2, $options, $mode, $elementname, $values);
+        $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
 
         return $prefix . $rubric_editor . html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
