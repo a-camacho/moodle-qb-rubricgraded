@@ -166,16 +166,21 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
                 ), array('class' => 'fitem'));
         }
 
-        /* TODO: Change hard-coded strings to language based strings */
-
-        $prefix =   html_writer::tag('div', html_writer::tag('div',
-                html_writer::tag('label', 'Rubrics') .
-                        html_writer::tag('div', '<i>Here will come the rubrics grading strategy</i>')));
-
         /* TODO : Find if there is a cleaner (more up) way to show the rubrics */
         $cmid = $PAGE->cm->id;
+        $context = $PAGE->context;
+        $rubric_id = intval($qa->get_question()->rubricid);
+
+        /* TODO: Change hard-coded strings to language based strings */
+        $prefix =   html_writer::tag('div', html_writer::tag('div',
+            html_writer::tag('label', 'Rubrics') .
+            html_writer::tag('div', '<i>Here will come the rubrics grading strategy for rubric id <strong><u>' . $rubric_id . '</u></strong></i>')));
+
+        $definition = $this->load_definition_from_id($rubric_id);
+        var_dump($definition);
 
         $rubric_renderer = new gradingform_rubric_renderer($PAGE, '');
+
             $criteria = array(
                             array(  'id' => '1',
                                     'sortorder' => '1',
@@ -198,6 +203,9 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
                                     )
                             )
                         );
+
+            $criteria2 = $definition->rubric_criteria;
+
             $options = array(   'sortlevelsasc' => '1',
                                 'lockzeropoints' => '1',
                                 'alwaysshowdefinition' => '1',
@@ -212,7 +220,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             $elementname = 'mycustomname';
             $values = null;
 
-        $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
+        $rubric_editor = $rubric_renderer->display_rubric($criteria2, $options, $mode, $elementname, $values);
 
         return $prefix . $rubric_editor . html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
@@ -258,6 +266,84 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             $output .= html_writer::tag('div', $link, array('class' => 'commentlink'));
         }
         return $output;
+    }
+
+    /**
+     * Loads the rubric form definition if it exists
+     *
+     * There is a new array called 'rubric_criteria' appended to the list of parent's definition properties.
+     */
+    protected function load_definition_from_id($id) {
+        global $DB;
+        $sql = "SELECT gd.*,
+                       rc.id AS rcid, rc.sortorder AS rcsortorder, rc.description AS rcdescription, rc.descriptionformat AS rcdescriptionformat,
+                       rl.id AS rlid, rl.score AS rlscore, rl.definition AS rldefinition, rl.definitionformat AS rldefinitionformat
+                  FROM {grading_definitions} gd
+             LEFT JOIN {gradingform_rubric_criteria} rc ON (rc.definitionid = :rubricid)
+             LEFT JOIN {gradingform_rubric_levels} rl ON (rl.criterionid = rc.id)
+              ORDER BY rc.sortorder,rl.score";
+        $params = array('rubricid' => $id, 'method' => 'rubricgraded');
+
+        $rs = $DB->get_recordset_sql($sql, $params);
+
+        $this->definition = false;
+        foreach ($rs as $record) {
+            // pick the common definition data
+            if ($this->definition === false) {
+                $this->definition = new stdClass();
+                foreach (array('id', 'name', 'description', 'descriptionformat', 'status', 'copiedfromid',
+                             'timecreated', 'usercreated', 'timemodified', 'usermodified', 'timecopied', 'options') as $fieldname) {
+                    $this->definition->$fieldname = $record->$fieldname;
+                }
+                $this->definition->rubric_criteria = array();
+            }
+            // pick the criterion data
+            if (!empty($record->rcid) and empty($this->definition->rubric_criteria[$record->rcid])) {
+                foreach (array('id', 'sortorder', 'description', 'descriptionformat') as $fieldname) {
+                    $this->definition->rubric_criteria[$record->rcid][$fieldname] = $record->{'rc'.$fieldname};
+                }
+                $this->definition->rubric_criteria[$record->rcid]['levels'] = array();
+            }
+            // pick the level data
+            if (!empty($record->rlid)) {
+                foreach (array('id', 'score', 'definition', 'definitionformat') as $fieldname) {
+                    $value = $record->{'rl'.$fieldname};
+                    if ($fieldname == 'score') {
+                        $value = (float)$value; // To prevent display like 1.00000
+                    }
+                    $this->definition->rubric_criteria[$record->rcid]['levels'][$record->rlid][$fieldname] = $value;
+                }
+            }
+        }
+        $rs->close();
+        $options = $this->get_default_options();
+        if (!$options['sortlevelsasc']) {
+            foreach (array_keys($this->definition->rubric_criteria) as $rcid) {
+                $this->definition->rubric_criteria[$rcid]['levels'] = array_reverse($this->definition->rubric_criteria[$rcid]['levels'], true);
+            }
+        }
+
+        return($this->definition);
+    }
+
+    /**
+     * Returns the default options for the rubric display
+     *
+     * @return array
+     */
+    public static function get_default_options() {
+        $options = array(
+            'sortlevelsasc' => 1,
+            'lockzeropoints' => 1,
+            'alwaysshowdefinition' => 1,
+            'showdescriptionteacher' => 1,
+            'showdescriptionstudent' => 1,
+            'showscoreteacher' => 1,
+            'showscorestudent' => 1,
+            'enableremarks' => 1,
+            'showremarksstudent' => 1
+        );
+        return $options;
     }
 
 }
