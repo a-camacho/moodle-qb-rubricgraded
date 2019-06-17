@@ -177,7 +177,6 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             html_writer::tag('div', '<i>Here will come the rubrics grading strategy for rubric id <strong><u>' . $rubric_id . '</u></strong></i>')));
 
         $definition = $this->load_definition_from_id($rubric_id);
-        var_dump($definition);
 
         $rubric_renderer = new gradingform_rubric_renderer($PAGE, '');
 
