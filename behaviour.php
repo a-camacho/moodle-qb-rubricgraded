@@ -86,9 +86,6 @@ class qbehaviour_rubricgraded extends question_behaviour_with_save {
      */
     public function process_save(question_attempt_pending_step $pendingstep) {
 
-        var_dump($this->qa);
-        exit;
-
         if ($this->qa->get_state()->is_finished()) {
             return question_attempt::DISCARD;
         } else if (!$this->qa->get_state()->is_active()) {
@@ -128,9 +125,6 @@ class qbehaviour_rubricgraded extends question_behaviour_with_save {
      * @return bool
      */
     public function process_finish(question_attempt_pending_step $pendingstep) {
-
-        var_dump($this->qa);
-        exit;
 
         if ($this->qa->get_state()->is_finished()) {
             return question_attempt::DISCARD;
