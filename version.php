@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for the calculated question type.
+ * Version information for the rubric graded behaviour type.
  *
  * @package    qbehaviour
  * @subpackage rubricgraded
- * @copyright  2011 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2019 André Camacho
  */
 
 defined('MOODLE_INTERNAL') || die();

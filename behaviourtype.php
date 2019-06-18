@@ -15,11 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question behaviour type for manually graded behaviour.
+ * Question behaviour type for manually graded with rubric behaviour.
  *
  * @package    qbehaviour_rubricgraded
- * @copyright  2012 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2019 André Camacho
  */
 
 

@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the renderer for the manual graded behaviour.
+ * Defines the renderer for the manual graded with rubric behaviour.
  *
  * @package    qbehaviour
  * @subpackage rubricgraded
- * @copyright  2009 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2019 André Camacho
  */
 
 

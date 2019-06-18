@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question behaviour for questions that can only be graded manually.
+ * Question behaviour for questions that can be graded manually using a rubric.
  *
  * @package    qbehaviour
  * @subpackage rubricgraded
- * @copyright  2009 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2019 André Camacho
  */
 
 
@@ -39,10 +38,17 @@ defined('MOODLE_INTERNAL') || die();
  */
 class qbehaviour_rubricgraded extends question_behaviour_with_save {
 
+    /**
+     * @param question_definition $question
+     * @return bool
+     */
     public function is_compatible_question(question_definition $question) {
         return $question instanceof question_with_responses;
     }
 
+    /**
+     * @param question_display_options $options
+     */
     public function adjust_display_options(question_display_options $options) {
         parent::adjust_display_options($options);
 
@@ -55,6 +61,11 @@ class qbehaviour_rubricgraded extends question_behaviour_with_save {
         }
     }
 
+    /**
+     * @param question_attempt_pending_step $pendingstep
+     * @return bool
+     * @throws coding_exception
+     */
     public function process_action(question_attempt_pending_step $pendingstep) {
         if ($pendingstep->has_behaviour_var('comment')) {
             return $this->process_comment($pendingstep);
@@ -71,8 +82,13 @@ class qbehaviour_rubricgraded extends question_behaviour_with_save {
      * @param question_attempt_pending_step $pendingstep a partially initialised step
      *      containing all the information about the action that is being performed.
      * @return bool either {@link question_attempt::KEEP} or {@link question_attempt::DISCARD}
+     * @throws coding_exception
      */
     public function process_save(question_attempt_pending_step $pendingstep) {
+
+        var_dump($this->qa);
+        exit;
+
         if ($this->qa->get_state()->is_finished()) {
             return question_attempt::DISCARD;
         } else if (!$this->qa->get_state()->is_active()) {
@@ -93,6 +109,10 @@ class qbehaviour_rubricgraded extends question_behaviour_with_save {
         return question_attempt::KEEP;
     }
 
+    /**
+     * @param question_attempt_step $step
+     * @return string
+     */
     public function summarise_action(question_attempt_step $step) {
         if ($step->has_behaviour_var('comment')) {
             return $this->summarise_manual_comment($step);
@@ -103,7 +123,15 @@ class qbehaviour_rubricgraded extends question_behaviour_with_save {
         }
     }
 
+    /**
+     * @param question_attempt_pending_step $pendingstep
+     * @return bool
+     */
     public function process_finish(question_attempt_pending_step $pendingstep) {
+
+        var_dump($this->qa);
+        exit;
+
         if ($this->qa->get_state()->is_finished()) {
             return question_attempt::DISCARD;
         }
