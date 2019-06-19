@@ -21,16 +21,8 @@
  * @copyright  2019 André Camacho
  */
 
-
 defined('MOODLE_INTERNAL') || die();
 
-
-/**
- * Question behaviour type information for manually graded behaviour.
- *
- * @copyright  2012 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class qbehaviour_rubricgraded_type extends question_behaviour_type {
     public function is_archetypal() {
         return true;
