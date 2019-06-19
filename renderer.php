@@ -58,6 +58,9 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         require_once($CFG->dirroot.'/lib/filelib.php');
         require_once($CFG->dirroot.'/repository/lib.php');
 
+        // Require JS for calculating total score
+        $PAGE->requires->js_call_amd('qbehaviour_rubricgraded/main', 'init');
+
         $inputname = $qa->get_behaviour_field_name('comment');
         $id = $inputname . '_id';
         list($commenttext, $commentformat, $commentstep) = $qa->get_current_manual_comment();
@@ -171,9 +174,8 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         $rubric_id = intval($qa->get_question()->rubricid);
 
         /* TODO: Change hard-coded strings to language based strings */
-        $prefix =   html_writer::tag('div', html_writer::tag('div',
-            html_writer::tag('label', 'Rubrics') .
-            html_writer::tag('div', '<i>Here will come the rubrics grading strategy for rubric id <strong><u>' . $rubric_id . '</u></strong></i>')));
+        $prefix = html_writer::tag('div', html_writer::tag('div',
+            html_writer::tag('label', 'Rubrics' . ' (id=' . $rubric_id . ')')));
 
         $definition = $this->load_definition_from_id($rubric_id);
 
@@ -198,10 +200,21 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             $elementname = 'mycustomname';
             $values = null;
 
+        if ($qa->get_max_mark()) {
+            $maximum_mark = $qa->get_max_mark();
+        } else {
+            $maximum_mark = "?";
+        }
+
+        $total_score = html_writer::tag('label', 'Total points : ' . html_writer::tag('span', '0', array('class' => 'total_points', 'id' => 'totalPoints') ) );
+        $total_score_decimal = html_writer::tag('label', 'Total score (max ' . $maximum_mark . ') : ' . html_writer::tag('span', '0', array('class' => 'total_score_decimal', 'id' => 'totalScoreDecimal') ) );
+
         $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
 
-        return $prefix . $rubric_editor . html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
+        $fieldset = html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
+
+        return $prefix . $rubric_editor . $total_score . html_writer::empty_tag('br') . $total_score_decimal . html_writer::empty_tag('br') . html_writer::empty_tag('br') . $fieldset;
 
     }
 
