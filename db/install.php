@@ -21,15 +21,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Post-install script
  */
-function xmldb_qbehaviour_rubricgraded_install() {
-
+function xmldb_qbehaviour_rubricgraded_install()
+{
     // Hide the rubricgraded behaviour from the list of behaviours that users
     // can select in the user-interface. If a user accidentally chooses manual
     // graded behaviour for a quiz, there is no way to get the questions automatically
@@ -37,11 +35,13 @@ function xmldb_qbehaviour_rubricgraded_install() {
     // this they can ask their admin to enable it on the manage behaviours
     // screen in the UI.
     $disabledbehaviours = get_config('question', 'disabledbehaviours');
+
     if (!empty($disabledbehaviours)) {
         $disabledbehaviours = explode(',', $disabledbehaviours);
     } else {
         $disabledbehaviours = array();
     }
+
     if (array_search('rubricgraded', $disabledbehaviours) === false) {
         $disabledbehaviours[] = 'rubricgraded';
         set_config('disabledbehaviours', implode(',', $disabledbehaviours), 'question');
