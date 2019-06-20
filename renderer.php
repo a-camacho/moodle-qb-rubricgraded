@@ -59,7 +59,8 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         require_once($CFG->dirroot.'/repository/lib.php');
 
         // Require JS for calculating total score
-        $PAGE->requires->js_call_amd('qbehaviour_rubricgraded/main', 'init');
+        $maximum_mark = ($qa->get_max_mark() ? $qa->get_max_mark() : null );
+        $PAGE->requires->js_call_amd('qbehaviour_rubricgraded/main', 'init', array( $maximum_mark ) );
 
         $inputname = $qa->get_behaviour_field_name('comment');
         $id = $inputname . '_id';
@@ -199,12 +200,6 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             $mode = 4;
             $elementname = 'mycustomname';
             $values = null;
-
-        if ($qa->get_max_mark()) {
-            $maximum_mark = $qa->get_max_mark();
-        } else {
-            $maximum_mark = "?";
-        }
 
         $total_score = html_writer::tag('label', 'Total points : ' . html_writer::tag('span', '0', array('class' => 'total_points', 'id' => 'totalPoints') ) );
         $total_score_decimal = html_writer::tag('label', 'Total score (max ' . html_writer::tag('span', $maximum_mark, array('class' => 'maximum_mark', 'id' => 'maximumMark') ) . ') : ' . html_writer::tag('span', '0', array('class' => 'total_score_decimal', 'id' => 'totalScoreDecimal') ) );

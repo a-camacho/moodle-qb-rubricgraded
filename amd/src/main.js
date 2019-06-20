@@ -6,7 +6,7 @@ define(['jquery'], function($) {
     /* TODO : How to fix some Javascript variables so we can use them in each function without recreation */
 
     return {
-        init: function() {
+        init: function( maxmark ) {
 
             $( document ).ready(function() {
                 var maxPoints = getMaxPoints();
@@ -80,7 +80,7 @@ define(['jquery'], function($) {
             var calculateDecimalTotal = function( totalPoints, maxPoints ) {
 
                 var totalDecimal;
-                var maximumMark =  Number($('#maximumMark').text());
+                var maximumMark = maxmark;
 
                 if (totalPoints > 0){
                     /* TODO : Is that the right way to calculate decimal total */
