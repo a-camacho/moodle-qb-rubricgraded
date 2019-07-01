@@ -176,7 +176,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         /* TODO: Change hard-coded strings to language based strings */
         $prefix = html_writer::tag('div', html_writer::tag('div',
-            html_writer::tag('label', 'Rubrics' . ' (id=' . $rubric_id . ')')));
+            html_writer::tag('label', 'Rubrics')));
 
         $definition = $this->load_definition_from_id($rubric_id);
 
@@ -199,7 +199,13 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
                             );
             $mode = 4;
             $elementname = 'mycustomname';
-            $values = null;
+
+            // $values = null;
+            $values = array();
+            $values['criteria'] = array();
+
+            $values['criteria'][7] = array('id' => '20', 'criterionid' => '7', 'levelid' => '20', 'savedlevelid' => '20', 'remark' => 'test' );
+            $values['criteria'][8] = array('id' => '22', 'criterionid' => '8', 'levelid' => '22', 'savedlevelid' => '22', 'remark' => 'test' );
 
         $total_score = html_writer::tag('label', 'Total points : ' . html_writer::tag('span', '0', array('class' => 'total_points', 'id' => 'totalPoints') ) );
         $total_score_decimal = html_writer::tag('label', 'Total score (max ' . html_writer::tag('span', $maximum_mark, array('class' => 'maximum_mark', 'id' => 'maximumMark') ) . ') : ' . html_writer::tag('span', '0', array('class' => 'total_score_decimal', 'id' => 'totalScoreDecimal') ) );
@@ -229,7 +235,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
 
         return  $prefix . $rubric_editor . $total_score . html_writer::empty_tag('br') . $total_score_decimal .
-            html_writer::empty_tag('br') . $fieldset;
+            html_writer::empty_tag('br') . html_writer::empty_tag('br') . $fieldset;
 
     }
 
@@ -357,7 +363,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
      *
      * @param $qa_usage_id
      * @param $rubric_id
-     * @return bool|stdClass
+     * @return array
      * @throws dml_exception
      */
 
