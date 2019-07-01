@@ -204,12 +204,32 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         $total_score = html_writer::tag('label', 'Total points : ' . html_writer::tag('span', '0', array('class' => 'total_points', 'id' => 'totalPoints') ) );
         $total_score_decimal = html_writer::tag('label', 'Total score (max ' . html_writer::tag('span', $maximum_mark, array('class' => 'maximum_mark', 'id' => 'maximumMark') ) . ') : ' . html_writer::tag('span', '0', array('class' => 'total_score_decimal', 'id' => 'totalScoreDecimal') ) );
 
+        // var_dump($qa);
+
+        echo '<b>Question id = </b>' . $qa->get_question()->id . '<br />';
+        echo '<b>Question attempt id = </b>' . 'X' . '<br />';
+        echo '<b>Question usage id = </b>' . $qa->get_usage_id() . ' (propre à chaque utilisateur)<br />';
+        echo '<b>Number of steps for this attempt = </b>' . $qa->get_num_steps() . '<br /><br />';
+
+        echo '<b>Rubric id = </b>' . $rubric_id . '<br />';
+        $criterions_and_levels = $this->load_rubric_filling_from_id($qa->get_usage_id(), $rubric_id);
+
+        echo '<b>Criterions(levels) used = </b>';
+        if ( !$criterions_and_levels ) {
+            echo 'No filling found' ;
+        } else {
+            echo json_encode($criterions_and_levels);
+        }
+
+        echo '<br /><br />';
+
         $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
 
         $fieldset = html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
 
-        return $prefix . $rubric_editor . $total_score . html_writer::empty_tag('br') . $total_score_decimal . html_writer::empty_tag('br') . html_writer::empty_tag('br') . $fieldset;
+        return  $prefix . $rubric_editor . $total_score . html_writer::empty_tag('br') . $total_score_decimal .
+            html_writer::empty_tag('br') . $fieldset;
 
     }
 
@@ -330,6 +350,47 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             'showremarksstudent' => 1
         );
         return $options;
+    }
+
+    /**
+     * Loads the rubric last filling if it exists
+     *
+     * @param $qa_usage_id
+     * @param $rubric_id
+     * @return bool|stdClass
+     * @throws dml_exception
+     */
+
+    /* TODO : Get only important fields, and return object with id's and values */
+    protected function load_rubric_filling_from_id($qa_usage_id, $rubric_id) {
+        global $DB;
+        $sql = "SELECT gd.*
+                  FROM {qtype_rgessay_rub_fillings} gd
+                  WHERE gd.instanceid = :qausageid
+              ORDER BY gd.id";
+
+        $params = array('qausageid' => $qa_usage_id, 'method' => 'rubricgraded', 'rubricid' => $rubric_id );
+
+        $rs = $DB->get_recordset_sql($sql, $params);
+
+        $filled_rubric = null;
+
+        if ($rs->valid()) {
+
+            $filled_rubric = array();
+
+            foreach ($rs as $record) {
+                $criterion = array($record->criterionid, $record->levelid, $record->remark);
+                array_push($filled_rubric, $criterion );
+            }
+
+            return $filled_rubric;
+            // return 'Filling found ... doing nothing for now.';
+        }
+
+        $rs->close();
+
+        return($filled_rubric);
     }
 
 }
