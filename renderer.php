@@ -220,6 +220,8 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         echo '<b>Rubric id = </b>' . $rubric_id . '<br />';
         $criterions_and_levels = $this->load_rubric_filling_from_id($qa->get_usage_id(), $rubric_id);
 
+        var_dump($criterions_and_levels);
+
         echo '<b>Criterions(levels) used = </b>';
         if ( !$criterions_and_levels ) {
             echo 'No filling found' ;
@@ -387,7 +389,8 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
             foreach ($rs as $record) {
                 $criterion = array($record->criterionid, $record->levelid, $record->remark);
-                array_push($filled_rubric, $criterion );
+                $filled_rubric[$record->criterionid] = $criterion;
+                // array_push($filled_rubric, $criterion );
             }
 
             return $filled_rubric;
