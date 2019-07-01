@@ -204,8 +204,13 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             $values = array();
             $values['criteria'] = array();
 
-            $values['criteria'][7] = array('id' => '20', 'criterionid' => '7', 'levelid' => '20', 'savedlevelid' => '20', 'remark' => 'test' );
-            $values['criteria'][8] = array('id' => '22', 'criterionid' => '8', 'levelid' => '22', 'savedlevelid' => '22', 'remark' => 'test' );
+            // Check if this rubric has been filled for this qa->usage and fill $values
+            $criterions_and_levels = $this->load_rubric_filling_from_id($qa->get_usage_id(), $rubric_id);
+            if ( $criterions_and_levels ) {
+                foreach ( $criterions_and_levels as $criterion ) {
+                    $values['criteria'][$criterion[0]] = array('id' => $criterion[1], 'criterionid' => $criterion[0], 'levelid' => $criterion[1], 'savedlevelid' => $criterion[1], 'remark' => $criterion[2] );
+                }
+            }
 
         $total_score = html_writer::tag('label', 'Total points : ' . html_writer::tag('span', '0', array('class' => 'total_points', 'id' => 'totalPoints') ) );
         $total_score_decimal = html_writer::tag('label', 'Total score (max ' . html_writer::tag('span', $maximum_mark, array('class' => 'maximum_mark', 'id' => 'maximumMark') ) . ') : ' . html_writer::tag('span', '0', array('class' => 'total_score_decimal', 'id' => 'totalScoreDecimal') ) );
@@ -218,7 +223,6 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         echo '<b>Number of steps for this attempt = </b>' . $qa->get_num_steps() . '<br /><br />';
 
         echo '<b>Rubric id = </b>' . $rubric_id . '<br />';
-        $criterions_and_levels = $this->load_rubric_filling_from_id($qa->get_usage_id(), $rubric_id);
 
         var_dump($criterions_and_levels);
 
