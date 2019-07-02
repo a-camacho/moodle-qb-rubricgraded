@@ -21,9 +21,11 @@ define(['jquery'], function($) {
 
                     var totalPoints = calculatePoints();
                     var maxPoints = getMaxPoints();
+                    var totalMark = calculateDecimalTotal( totalPoints, maxPoints );
 
                     $("#totalPoints").html( totalPoints );
-                    $("#totalScoreDecimal").html( calculateDecimalTotal( totalPoints, maxPoints ) );
+                    $("#totalScoreDecimal").html( totalMark );
+                    $("div#totalMark input").first().val( totalMark );
 
                 }
             });
@@ -79,6 +81,7 @@ define(['jquery'], function($) {
 
             var calculateDecimalTotal = function( totalPoints, maxPoints ) {
 
+                var totalRounded;
                 var totalDecimal;
                 var maximumMark = maxmark;
 
@@ -91,7 +94,10 @@ define(['jquery'], function($) {
                 }
 
                 // Weight totalDecimal against maxGrade of this question
-                return totalDecimal * maximumMark;
+                totalRounded = totalDecimal * maximumMark;
+                totalRounded = totalRounded.toFixed(2);
+
+                return totalRounded;
 
             }
 

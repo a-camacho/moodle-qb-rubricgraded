@@ -162,10 +162,10 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             $a->mark = html_writer::empty_tag('input', $attributes);
             $mark = html_writer::tag('div', html_writer::tag('div',
                     html_writer::tag('label', get_string('mark', 'question'),
-                        array('for' => $markfield)),
+                        array('for' => $markfield),
                     array('class' => 'fitemtitle')) .
                 html_writer::tag('div', $error . get_string('xoutofmax', 'question', $a) .
-                    $markrange, array('class' => 'felement ftext' . $errorclass)
+                    $markrange, array('class' => 'felement ftext' . $errorclass, 'id' => 'totalMark'))
                 ), array('class' => 'fitem'));
         }
 
@@ -223,8 +223,6 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         echo '<b>Number of steps for this attempt = </b>' . $qa->get_num_steps() . '<br /><br />';
 
         echo '<b>Rubric id = </b>' . $rubric_id . '<br />';
-
-        var_dump($criterions_and_levels);
 
         echo '<b>Criterions(levels) used = </b>';
         if ( !$criterions_and_levels ) {
