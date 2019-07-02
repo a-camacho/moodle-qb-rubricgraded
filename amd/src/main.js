@@ -12,7 +12,7 @@ define(['jquery'], function($) {
                 var maxPoints = getMaxPoints();
                 var totalPoints = calculatePoints();
 
-                $("#totalPoints").html( totalPoints );
+                $("#totalPoints").html( totalPoints + '/' + maxPoints );
                 $("#totalScoreDecimal").html( calculateDecimalTotal( totalPoints, maxPoints ) );
             });
 
@@ -23,7 +23,7 @@ define(['jquery'], function($) {
                     var maxPoints = getMaxPoints();
                     var totalMark = calculateDecimalTotal( totalPoints, maxPoints );
 
-                    $("#totalPoints").html( totalPoints );
+                    $("#totalPoints").html( totalPoints + '/' + maxPoints );
                     $("#totalScoreDecimal").html( totalMark );
                     $("div#totalMark input").first().val( totalMark );
 
