@@ -60,7 +60,9 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         // Require JS for calculating total score
         $maximum_mark = ($qa->get_max_mark() ? $qa->get_max_mark() : null );
-        $PAGE->requires->js_call_amd('qbehaviour_rubricgraded/main', 'init', array( $maximum_mark ) );
+        $elementname = $qa->get_field_prefix();
+
+        $PAGE->requires->js_call_amd('qbehaviour_rubricgraded/main', 'init', array( $maximum_mark, $elementname ) );
 
         $inputname = $qa->get_behaviour_field_name('comment');
         $id = $inputname . '_id';
@@ -198,7 +200,6 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
                                 'showremarksstudent' => '1',
                             );
             $mode = 4;
-            $elementname = 'mycustomname';
 
             // $values = null;
             $values = array();

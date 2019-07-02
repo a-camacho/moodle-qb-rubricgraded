@@ -6,7 +6,7 @@ define(['jquery'], function($) {
     /* TODO : How to fix some Javascript variables so we can use them in each function without recreation */
 
     return {
-        init: function( maxmark ) {
+        init: function( maxmark, elementname ) {
 
             $( document ).ready(function() {
                 var maxPoints = getMaxPoints();
