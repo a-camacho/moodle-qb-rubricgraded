@@ -74,8 +74,9 @@ define(['jquery'], function($) {
                     for (var i = 0; i < pointsArray.length; i++) {
                         total += pointsArray[i] << 0;
                     }
-                    return total;
                 }
+
+                return total;
 
             };
 
