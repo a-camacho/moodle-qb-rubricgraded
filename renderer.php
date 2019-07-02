@@ -200,6 +200,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
                                 'showremarksstudent' => '1',
                             );
             $mode = 4;
+            $old_elementname = 'mycustomname';
 
             // $values = null;
             $values = array();
@@ -234,7 +235,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         echo '<br /><br />';
 
-        $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
+        $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $old_elementname, $values);
 
         $fieldset = html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
