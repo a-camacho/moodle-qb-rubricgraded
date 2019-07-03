@@ -60,7 +60,10 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         // Require JS for calculating total score
         $maximum_mark = ($qa->get_max_mark() ? $qa->get_max_mark() : null );
+
         $elementname = $qa->get_field_prefix();
+        $elementname = str_replace(":", "-", $elementname);
+        $elementname = str_replace("_", "", $elementname);
 
         $PAGE->requires->js_call_amd('qbehaviour_rubricgraded/main', 'init', array( $maximum_mark, $elementname ) );
 
@@ -226,6 +229,9 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         echo '<b>Rubric id = </b>' . $rubric_id . '<br />';
 
+        // TODO: A simple field that could help identify data life cycle until database
+        // echo '<input type="text" id="mycustom" name="mycustom" minlength="4" maxlength="8" size="10" value="Bla bla">';
+
         echo '<b>Criterions(levels) used = </b>';
         if ( !$criterions_and_levels ) {
             echo 'No filling found' ;
@@ -235,7 +241,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         echo '<br /><br />';
 
-        $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $old_elementname, $values);
+        $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
 
         $fieldset = html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));

@@ -16,7 +16,8 @@ define(['jquery'], function($) {
                 $("#totalScoreDecimal").html( calculateDecimalTotal( totalPoints, maxPoints ) );
             });
 
-            $('input[name^="mycustomname"]').change(function () {
+            $('input[name^='+elementname+']').change(function () {
+
                 if (this.checked) {
 
                     var totalPoints = calculatePoints();
@@ -35,7 +36,7 @@ define(['jquery'], function($) {
 
                 var maxPointsArray = [];
 
-                $('td.last[id^="mycustomname-criteria"]').each(function() {
+                $('td.last[id^="'+elementname+'-criteria"]').each(function() {
                     maxPointsArray.push(Number($('#'+$(this).attr('id')+'-score').text()));
                 });
 
@@ -56,7 +57,7 @@ define(['jquery'], function($) {
                 var pointsArray = [];
                 var total = 0;
 
-                $("#rubric-mycustomname input:checked").each(function() {
+                $("#rubric-"+elementname+" input:checked").each(function() {
 
                     // Push checkbox id into array
                     var checkbox_id = $(this).attr('id');
