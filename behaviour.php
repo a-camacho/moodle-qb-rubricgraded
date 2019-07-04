@@ -141,4 +141,22 @@ class qbehaviour_rubricgraded extends question_behaviour_with_save {
         return question_attempt::KEEP;
     }
 
+    /**
+     * Return an array of the behaviour variables that could be submitted
+     * as part of a question of this type, with their types, so they can be
+     * properly cleaned.
+     *
+     * @return array variable name => PARAM_... constant.
+     */
+    public function get_expected_data() {
+
+        $vars = parent::get_expected_data();
+
+        if ( !empty($vars) ) {
+            $vars['rubfilling'] = PARAM_TEXT;
+        }
+
+        return $vars;
+    }
+
 }
