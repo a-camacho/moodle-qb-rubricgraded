@@ -62,8 +62,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         $maximum_mark = ($qa->get_max_mark() ? $qa->get_max_mark() : null );
 
         $elementname = $qa->get_field_prefix();
-        $elementname = str_replace(":", "-", $elementname);
-        $elementname = str_replace("_", "", $elementname);
+        $elementname = $elementname . "-rubric";
 
         $PAGE->requires->js_call_amd('qbehaviour_rubricgraded/main', 'init', array( $maximum_mark, $elementname ) );
 
@@ -242,6 +241,8 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         echo '<br /><br />';
 
         $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
+        $rubric_editor .= html_writer::empty_tag('input', array( "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => "q1:1_-test", "value" => "" ) );
+        $rubric_editor .= html_writer::empty_tag('br') . html_writer::empty_tag('br');
 
         $fieldset = html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
