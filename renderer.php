@@ -241,7 +241,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         echo '<br /><br />';
 
         $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
-        $rubric_editor .= html_writer::empty_tag('input', array( "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => "q1:1_-test", "value" => "" ) );
+        $rubric_editor .= html_writer::empty_tag('input', array( "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => "q1:1_-rubfilling", "value" => "" ) );
         $rubric_editor .= html_writer::empty_tag('br') . html_writer::empty_tag('br');
 
         $fieldset = html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
