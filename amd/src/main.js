@@ -8,6 +8,9 @@ define(['jquery'], function($) {
     return {
         init: function( maxmark, elementname ) {
 
+            var escapedelementname = elementname.replace("\:", "\\\:");
+            var escrubfillingname = escapedelementname.replace("-rubric", "-rubfilling");
+
             $( document ).ready(function() {
                 var maxPoints = getMaxPoints();
                 var totalPoints = calculatePoints();
@@ -16,7 +19,8 @@ define(['jquery'], function($) {
                 $("#totalScoreDecimal").html( calculateDecimalTotal( totalPoints, maxPoints ) );
             });
 
-            $('input[name^='+elementname+']').change(function () {
+            /* Here Jquery variable needs to be escaped. TODO : Because ? */
+            $('input[name^="'+escapedelementname+'"]').change(function () {
 
                 if (this.checked) {
 
@@ -28,16 +32,47 @@ define(['jquery'], function($) {
                     $("#totalScoreDecimal").html( totalMark );
                     $("div#totalMark input").first().val( totalMark );
 
+                    $('#' + escrubfillingname).val( generateFillingJSON() );
+
                 }
             });
 
-            /* TODO: Should max points be fixed by PHP once ? Probably. */
+            var generateFillingJSON = function() {
+
+                var rubric_filling = [];
+
+                /* Here Jquery variable needs to be escaped. TODO : Because ? */
+                $("#rubric-" + escapedelementname + " input:checked").each(function() {
+
+                    string = $(this).attr('id');
+
+                    var criterion_value = string.match(/criteria-([^-]+)/)[1];
+                    // var criterion = parseInt(criterion, 10);
+                    var level_value = string.match(/levels-([^-]+)/)[1];
+
+                    // console.log("criterion is " + criterion + " and level is " + level);
+
+                    var criterion = {};
+                    criterion.criterion = criterion_value;
+                    criterion.level = level_value;
+
+                    rubric_filling.push(criterion);
+
+                });
+
+                return JSON.stringify(rubric_filling);
+
+            };
+
+            /* TODO: Should max points be getted from php function with rubric id ? */
             var getMaxPoints = function() {
 
                 var maxPointsArray = [];
 
-                $('td.last[id^="'+elementname+'-criteria"]').each(function() {
-                    maxPointsArray.push(Number($('#'+$(this).attr('id')+'-score').text()));
+                /* Here Jquery variable does not need to be escaped. TODO : Why ? */
+                $('td.last[id^="' + elementname + '-criteria"]').each(function() {
+                    var maxCriterionPoints = $(this).find("span.scorevalue").text();
+                    maxPointsArray.push(Number(maxCriterionPoints));
                 });
 
                 if(maxPointsArray.length > 0){
@@ -53,21 +88,23 @@ define(['jquery'], function($) {
 
             var calculatePoints = function() {
 
-                // var chkArray = [];
                 var pointsArray = [];
                 var total = 0;
 
-                $("#rubric-"+elementname+" input:checked").each(function() {
+                $("#rubric-" + escapedelementname + " input:checked").each(function() {
 
                     // Push checkbox id into array
                     var checkbox_id = $(this).attr('id');
-                    // chkArray.push(checkbox_id);
 
                     // Push checkbox_score into array
-                    var checkbox_points_id = checkbox_id.slice(0,-11)
-                    var checkbox_points = $("#"+checkbox_points_id+"-score").text();
+                    var checkbox_points_id = checkbox_id.slice(0,-11);
+                    var automaticid = "#"+checkbox_points_id+"-score";
+                    var escapedautomaticid = automaticid.replace("\:", "\\\:");
 
-                    pointsArray.push(Number(checkbox_points));
+                    var checkbox_points = $(escapedautomaticid).text();
+
+                    checkbox_points = Number(checkbox_points);
+                    pointsArray.push(checkbox_points);
 
                 });
 
@@ -90,7 +127,7 @@ define(['jquery'], function($) {
                 if (totalPoints > 0){
                     /* TODO : Is that the right way to calculate decimal total */
                     totalDecimal = eval(totalPoints/maxPoints);
-                    console.log('total is ' + totalPoints + '/' + maxPoints + '. Decimal value is = ' + totalDecimal);
+                    // console.log('total is ' + totalPoints + '/' + maxPoints + '. Decimal value is = ' + totalDecimal);
                 } else {
                     totalDecimal = 0;
                 }
