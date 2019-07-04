@@ -219,8 +219,6 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         $total_score = html_writer::tag('label', 'Total points : ' . html_writer::tag('span', '0', array('class' => 'total_points', 'id' => 'totalPoints') ) );
         $total_score_decimal = html_writer::tag('label', 'Total score (max ' . html_writer::tag('span', $maximum_mark, array('class' => 'maximum_mark', 'id' => 'maximumMark') ) . ') : ' . html_writer::tag('span', '0', array('class' => 'total_score_decimal', 'id' => 'totalScoreDecimal') ) );
 
-        // var_dump($qa);
-
         echo '<b>Question id = </b>' . $qa->get_question()->id . '<br />';
         echo '<b>Question attempt id = </b>' . 'X' . '<br />';
         echo '<b>Question usage id = </b>' . $qa->get_usage_id() . ' (propre à chaque utilisateur)<br />';
@@ -371,6 +369,11 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         return $options;
     }
 
+    protected function load_rubric_filling_from_json() {
+        $filled_rubric = array();
+        return($filled_rubric);
+    }
+
     /**
      * Loads the rubric last filling if it exists
      *
@@ -379,7 +382,6 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
      * @return array
      * @throws dml_exception
      */
-
     /* TODO : Get only important fields, and return object with id's and values */
     protected function load_rubric_filling_from_id($qa_usage_id, $rubric_id) {
         global $DB;
