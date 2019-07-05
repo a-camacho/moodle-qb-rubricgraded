@@ -218,6 +218,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         $total_score = html_writer::tag('label', 'Total points : ' . html_writer::tag('span', '0', array('class' => 'total_points', 'id' => 'totalPoints') ) );
         $total_score_decimal = html_writer::tag('label', 'Total score (max ' . html_writer::tag('span', $maximum_mark, array('class' => 'maximum_mark', 'id' => 'maximumMark') ) . ') : ' . html_writer::tag('span', '0', array('class' => 'total_score_decimal', 'id' => 'totalScoreDecimal') ) );
 
+        /*
         echo '<b>Question id = </b>' . $qa->get_question()->id . '<br />';
         echo '<b>Question attempt id = </b>' . 'X' . '<br />';
         echo '<b>Question usage id = </b>' . $qa->get_usage_id() . ' (propre à chaque utilisateur)<br />';
@@ -233,10 +234,11 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         }
 
         echo '<br /><br />';
+        */
 
         $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
-        $rubric_editor .= html_writer::empty_tag('input', array( /* 'class' => 'hidden', */ "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => "q1:1_-rubfilling", "value" => $filling_input ) );
-        $rubric_editor .= html_writer::empty_tag('br') . html_writer::empty_tag('br');
+
+        $rubric_editor .= html_writer::empty_tag('input', array( 'class' => 'hidden', "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => "q1:1_-rubfilling", "value" => $filling_input ) );
 
         $fieldset = html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
