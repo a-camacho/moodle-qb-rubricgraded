@@ -50,11 +50,14 @@ define(['jquery'], function($) {
                     // var criterion = parseInt(criterion, 10);
                     var level_value = string.match(/levels-([^-]+)/)[1];
 
+                    var remark = $("#" + escapedelementname + "-criteria-" + criterion_value + "-remark").val();
+
                     // console.log("criterion is " + criterion + " and level is " + level);
 
                     var criterion = {};
                     criterion.criterion = criterion_value;
                     criterion.level = level_value;
+                    criterion.remark = remark;
 
                     rubric_filling.push(criterion);
 
