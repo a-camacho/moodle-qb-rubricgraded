@@ -354,7 +354,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             // ********************************** //
 
             $output = '';
-            $content = 'Rubric criterion (RO) here IF OPTION ENABLED : coming soon';
+            $content = 'Rubric criterion (RO) here IF OPTION ENABLED : coming soon<br /><br />';
             $content .= $rubric_editor;
             $output .= html_writer::tag('h4', "Rubric", array( 'class' => 'accesshide' ) ) . $content;
 
