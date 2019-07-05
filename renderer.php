@@ -263,6 +263,20 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
      */
     public function manual_comment(question_attempt $qa, question_display_options $options) {
         global $PAGE;
+
+        // ********************************** //
+
+        // Get rubric definition
+        $rubric_id = intval($qa->get_question()->rubricid);
+        $definition = $this->load_definition_from_id($rubric_id);
+
+        // Get rubric renderer
+        $rubric_renderer = new gradingform_rubric_renderer($PAGE, '');
+
+        $criteria = $definition->rubric_criteria;
+
+        // ********************************** //
+
         if ($options->manualcomment == question_display_options::EDITABLE) {
 
             // Do not do anything as rubric is already included here
@@ -273,19 +287,8 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
             // ********************************** //
 
-            // Get rubric definition
-            $rubric_id = intval($qa->get_question()->rubricid);
-            $definition = $this->load_definition_from_id($rubric_id);
-
-            // Get rubric renderer
-            $rubric_renderer = new gradingform_rubric_renderer($PAGE, '');
-
-            $criteria = $definition->rubric_criteria;
-
-            // This gets options from rubric, in a string format
-            // $options = $definition->options;
-
-            $rubric_options = array(   'sortlevelsasc' => '1',
+            $rubric_options = array(
+                'sortlevelsasc' => '1',
                 'lockzeropoints' => '1',
                 'alwaysshowdefinition' => '1',
                 'showdescriptionteacher' => '1',
@@ -328,8 +331,31 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         } else {
 
+            // ********************************** //
+
+            $rubric_options = array(
+                'sortlevelsasc' => '1',
+                'lockzeropoints' => '1',
+                'alwaysshowdefinition' => '1',
+                'showdescriptionteacher' => '1',
+                'showdescriptionstudent' => '1',
+                'showscoreteacher' => '1',
+                'showscorestudent' => '1',
+                'enableremarks' => '1',
+                'showremarksstudent' => '1',
+            );
+            $mode = 5;
+            $values = array();
+
+            $rubric_editor = $rubric_renderer->display_rubric($criteria, $rubric_options, $mode, $elementname, $values);
+            $rubric_editor .= html_writer::empty_tag('input', array( 'class' => 'hidden', "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => "q1:1_-rubfilling", "value" => $filling_input ) );
+
+
+            // ********************************** //
+
             $output = '';
             $content = 'Rubric criterion (RO) here IF OPTION ENABLED : coming soon';
+            $content .= $rubric_editor;
             $output .= html_writer::tag('h4', "Rubric", array( 'class' => 'accesshide' ) ) . $content;
 
             return $output;
