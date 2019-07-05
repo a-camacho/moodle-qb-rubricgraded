@@ -182,6 +182,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         $prefix = html_writer::tag('div', html_writer::tag('div',
             html_writer::tag('label', 'Rubrics')));
 
+        // Get rubric definition
         $definition = $this->load_definition_from_id($rubric_id);
 
         $rubric_renderer = new gradingform_rubric_renderer($PAGE, '');
@@ -202,19 +203,17 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
                                 'showremarksstudent' => '1',
                             );
             $mode = 4;
-            $old_elementname = 'mycustomname';
 
             // $values = null;
             $values = array();
             $values['criteria'] = array();
 
-            // Check if this rubric has been filled for this qa->usage and fill $values
-            $criterions_and_levels = $this->load_rubric_filling_from_id($qa->get_usage_id(), $rubric_id);
-            if ( $criterions_and_levels ) {
-                foreach ( $criterions_and_levels as $criterion ) {
-                    $values['criteria'][$criterion[0]] = array('id' => $criterion[1], 'criterionid' => $criterion[0], 'levelid' => $criterion[1], 'savedlevelid' => $criterion[1], 'remark' => $criterion[2] );
-                }
-            }
+            // Get rubric filling data if exist
+            $last_step = $qa->get_sequence_check_count()-1;
+            $step = $qa->get_step($last_step);
+            $filling_input = $step->get_behaviour_var('rubfilling');
+            $filling_array = $this->get_rubric_filling_array($values, $filling_input);
+            if ( !empty($filling_array) ) { $values = $filling_array; }
 
         $total_score = html_writer::tag('label', 'Total points : ' . html_writer::tag('span', '0', array('class' => 'total_points', 'id' => 'totalPoints') ) );
         $total_score_decimal = html_writer::tag('label', 'Total score (max ' . html_writer::tag('span', $maximum_mark, array('class' => 'maximum_mark', 'id' => 'maximumMark') ) . ') : ' . html_writer::tag('span', '0', array('class' => 'total_score_decimal', 'id' => 'totalScoreDecimal') ) );
@@ -226,20 +225,17 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         echo '<b>Rubric id = </b>' . $rubric_id . '<br />';
 
-        // TODO: A simple field that could help identify data life cycle until database
-        // echo '<input type="text" id="mycustom" name="mycustom" minlength="4" maxlength="8" size="10" value="Bla bla">';
-
         echo '<b>Criterions(levels) used = </b>';
-        if ( !$criterions_and_levels ) {
+        if ( !$filling_input ) {
             echo 'No filling found' ;
         } else {
-            echo json_encode($criterions_and_levels);
+            echo $filling_input;
         }
 
         echo '<br /><br />';
 
         $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
-        $rubric_editor .= html_writer::empty_tag('input', array( "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => "q1:1_-rubfilling", "value" => "" ) );
+        $rubric_editor .= html_writer::empty_tag('input', array( /* 'class' => 'hidden', */ "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => "q1:1_-rubfilling", "value" => $filling_input ) );
         $rubric_editor .= html_writer::empty_tag('br') . html_writer::empty_tag('br');
 
         $fieldset = html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
@@ -369,50 +365,23 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         return $options;
     }
 
-    protected function load_rubric_filling_from_json() {
-        $filled_rubric = array();
-        return($filled_rubric);
-    }
-
     /**
-     * Loads the rubric last filling if it exists
+     * Returns the well formated array from a JSON string regarding rubric filling
      *
-     * @param $qa_usage_id
-     * @param $rubric_id
      * @return array
-     * @throws dml_exception
      */
-    /* TODO : Get only important fields, and return object with id's and values */
-    protected function load_rubric_filling_from_id($qa_usage_id, $rubric_id) {
-        global $DB;
-        $sql = "SELECT gd.*
-                  FROM {qtype_rgessay_rub_fillings} gd
-                  WHERE gd.instanceid = :qausageid
-              ORDER BY gd.id";
+    public function get_rubric_filling_array( $values, $filling_input ) {
 
-        $params = array('qausageid' => $qa_usage_id, 'method' => 'rubricgraded', 'rubricid' => $rubric_id );
+        $filling_array = json_decode($filling_input);
 
-        $rs = $DB->get_recordset_sql($sql, $params);
-
-        $filled_rubric = null;
-
-        if ($rs->valid()) {
-
-            $filled_rubric = array();
-
-            foreach ($rs as $record) {
-                $criterion = array($record->criterionid, $record->levelid, $record->remark);
-                $filled_rubric[$record->criterionid] = $criterion;
-                // array_push($filled_rubric, $criterion );
+        if ( $filling_array ) {
+            foreach ( $filling_array as $criterion ) {
+                $remark = $criterion->remark ? $criterion->remark : "";
+                $values['criteria'][$criterion->criterion] = array('id' => $criterion->level, 'criterionid' => $criterion->criterion, 'levelid' => $criterion->level, 'savedlevelid' => $criterion->level, 'remark' => $remark );
             }
-
-            return $filled_rubric;
-            // return 'Filling found ... doing nothing for now.';
         }
 
-        $rs->close();
-
-        return($filled_rubric);
+        return($values);
     }
 
 }
