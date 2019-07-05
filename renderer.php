@@ -185,6 +185,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         // Get rubric definition
         $definition = $this->load_definition_from_id($rubric_id);
 
+        // Get rubric renderer
         $rubric_renderer = new gradingform_rubric_renderer($PAGE, '');
 
             $criteria = $definition->rubric_criteria;
@@ -213,7 +214,10 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             $step = $qa->get_step($last_step);
             $filling_input = $step->get_behaviour_var('rubfilling');
             $filling_array = $this->get_rubric_filling_array($values, $filling_input);
-            if ( !empty($filling_array) ) { $values = $filling_array; }
+
+            if ( !empty($filling_array) ) {
+                $values = $filling_array;
+            }
 
         $total_score = html_writer::tag('label', 'Total points : ' . html_writer::tag('span', '0', array('class' => 'total_points', 'id' => 'totalPoints') ) );
         $total_score_decimal = html_writer::tag('label', 'Total score (max ' . html_writer::tag('span', $maximum_mark, array('class' => 'maximum_mark', 'id' => 'maximumMark') ) . ') : ' . html_writer::tag('span', '0', array('class' => 'total_score_decimal', 'id' => 'totalScoreDecimal') ) );
@@ -258,17 +262,78 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
      * @return string HTML fragment.
      */
     public function manual_comment(question_attempt $qa, question_display_options $options) {
+        global $PAGE;
         if ($options->manualcomment == question_display_options::EDITABLE) {
-            return $this->manual_comment_fields($qa, $options);
-            // return 'shows when manual_comment is editable';
+
+            // Do not do anything as rubric is already included here
+            $output = $this->manual_comment_fields($qa, $options);
+            return $output;
 
         } else if ($options->manualcomment == question_display_options::VISIBLE) {
-            return $this->manual_comment_view($qa, $options);
-            // return 'shows when we can view manual comment but not edit it';
+
+            // ********************************** //
+
+            // Get rubric definition
+            $rubric_id = intval($qa->get_question()->rubricid);
+            $definition = $this->load_definition_from_id($rubric_id);
+
+            // Get rubric renderer
+            $rubric_renderer = new gradingform_rubric_renderer($PAGE, '');
+
+            $criteria = $definition->rubric_criteria;
+
+            // This gets options from rubric, in a string format
+            // $options = $definition->options;
+
+            $rubric_options = array(   'sortlevelsasc' => '1',
+                'lockzeropoints' => '1',
+                'alwaysshowdefinition' => '1',
+                'showdescriptionteacher' => '1',
+                'showdescriptionstudent' => '1',
+                'showscoreteacher' => '1',
+                'showscorestudent' => '1',
+                'enableremarks' => '1',
+                'showremarksstudent' => '1',
+            );
+            $mode = 6;
+
+            // $values = null;
+            $values = array();
+            $values['criteria'] = array();
+
+            // Get rubric filling data if exist
+            $last_step = $qa->get_sequence_check_count()-1;
+            $step = $qa->get_step($last_step);
+            $filling_input = $step->get_behaviour_var('rubfilling');
+            $filling_array = $this->get_rubric_filling_array($values, $filling_input);
+
+            if ( !empty($filling_array) ) {
+                $values = $filling_array;
+            }
+
+            $rubric_editor = $rubric_renderer->display_rubric($criteria, $rubric_options, $mode, $elementname, $values);
+            $rubric_editor .= html_writer::empty_tag('input', array( 'class' => 'hidden', "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => "q1:1_-rubfilling", "value" => $filling_input ) );
+
+            // ********************************** //
+
+            $output = '';
+            $content = 'Rubric filling here (RO) : coming soon (review attempt after grading + teacher after grading)<br /><br />';
+            $content .= $rubric_editor;
+            $output .= $this->manual_comment_view($qa, $options);
+            $output .= '</div>';
+            $output .= '<div>';
+            $output .= html_writer::div(html_writer::tag('h4', "Rubric", array( 'class' => 'accesshide' ) ) . $content, 'comment clearfix');
+
+            return $output;
 
         } else {
-            // return '';
-            return 'show nothing if we can\'t VIEW or EDIT manual comment';
+
+            $output = '';
+            $content = 'Rubric criterion (RO) here IF OPTION ENABLED : coming soon';
+            $output .= html_writer::tag('h4', "Rubric", array( 'class' => 'accesshide' ) ) . $content;
+
+            return $output;
+
         }
     }
 
@@ -373,16 +438,13 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
      * @return array
      */
     public function get_rubric_filling_array( $values, $filling_input ) {
-
         $filling_array = json_decode($filling_input);
-
         if ( $filling_array ) {
             foreach ( $filling_array as $criterion ) {
                 $remark = $criterion->remark ? $criterion->remark : "";
                 $values['criteria'][$criterion->criterion] = array('id' => $criterion->level, 'criterionid' => $criterion->criterion, 'levelid' => $criterion->level, 'savedlevelid' => $criterion->level, 'remark' => $remark );
             }
         }
-
         return($values);
     }
 
