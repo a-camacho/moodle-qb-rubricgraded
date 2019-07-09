@@ -180,7 +180,10 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         /* TODO: Change hard-coded strings to language based strings */
         $prefix = html_writer::tag('div', html_writer::tag('div',
-            html_writer::tag('label', 'Rubrics')));
+            html_writer::tag('label',
+                get_string('rubric', 'qbehaviour_rubricgraded')
+            )
+        ));
 
         // Get rubric definition
         $definition = $this->load_definition_from_id($rubric_id);
@@ -222,6 +225,8 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         $total_score = html_writer::tag('label', 'Total points : ' . html_writer::tag('span', '0', array('class' => 'total_points', 'id' => 'totalPoints') ) );
         $total_score_decimal = html_writer::tag('label', 'Total score (max ' . html_writer::tag('span', $maximum_mark, array('class' => 'maximum_mark', 'id' => 'maximumMark') ) . ') : ' . html_writer::tag('span', '0', array('class' => 'total_score_decimal', 'id' => 'totalScoreDecimal') ) );
 
+        // Debug information
+        /*
         echo '<b>Question id = </b>' . $qa->get_question()->id . '<br />';
         echo '<b>Question attempt id = </b>' . 'X' . '<br />';
         echo '<b>Question usage id = </b>' . $qa->get_usage_id() . ' (propre à chaque utilisateur)<br />';
@@ -237,7 +242,6 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         }
 
         echo '<br /><br />';
-        /*
         */
 
         $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
@@ -323,7 +327,8 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             // ********************************** //
 
             $output = '';
-            $content = 'Rubric filling here (RO) : coming soon (review attempt after grading + teacher after grading)<br /><br />';
+
+            $content = get_string('rubric_with_mode', 'qbehaviour_rubricgraded', 'review');
             $content .= $rubric_editor;
             $output .= $this->manual_comment_view($qa, $options);
             $output .= '</div>';
@@ -356,7 +361,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             // ********************************** //
 
             $output = '';
-            $content = 'Rubric criterion (RO) here IF OPTION ENABLED : coming soon<br /><br />';
+            $content = get_string('rubric_with_mode', 'qbehaviour_rubricgraded', 'review, no manual comment');
             $content .= $rubric_editor;
             $output .= html_writer::tag('h4', "Rubric", array( 'class' => 'accesshide' ) ) . $content;
 

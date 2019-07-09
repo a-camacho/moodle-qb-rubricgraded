@@ -25,3 +25,6 @@
 
 $string['pluginname'] = 'Rubric graded';
 $string['privacy:metadata'] = 'The Rubric graded question behaviour plugin does not store any personal data.';
+
+$string['rubric'] = 'Rubric';
+$string['rubric_with_mode'] = 'Rubric ({$a})';
