@@ -31,6 +31,23 @@ First install
 The simplest way to install the RubricGraded question behaviour plugin is going to the 
 *Site administration -> Plugins -> Install plugins* page. 
 
+## Notes
+
+##### About rubric form creation
+
+For setting up a rubric form, you have to create an "Assignment" type activity. You then can set
+up a rubric form for this activity. Unfortunately only one rubric form can be created on an "assignment"
+activity, **but** :
+
+  1. Rubrics can be saved as a template (and then reused later without keeping any activity).
+  _**Warning**_ : _templates will be available by other users in other courses_
+  2. Rubrics can also be added to an activity which is deleted later. Rubric stays in database and is not
+  shared with other users.
+  
+_NB : If a rubric is deleted from an activity and has not been saved as template it will be lost._
+  
+## FAQ
+
 ## License
 
 [GNU GPL v3 or later](http://www.gnu.org/copyleft/gpl.html) 
