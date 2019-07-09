@@ -242,7 +242,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
 
-        $rubric_editor .= html_writer::empty_tag('input', array( 'class' => 'hidden', "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => "q1:1_-rubfilling", "value" => $filling_input ) );
+        $rubric_editor .= html_writer::empty_tag('input', array( 'class' => 'hidden', "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => $qa->get_field_prefix() . "-rubfilling", "value" => $filling_input ) );
 
         $fieldset = html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
@@ -318,7 +318,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             }
 
             $rubric_editor = $rubric_renderer->display_rubric($criteria, $rubric_options, $mode, $elementname, $values);
-            $rubric_editor .= html_writer::empty_tag('input', array( 'class' => 'hidden', "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => "q1:1_-rubfilling", "value" => $filling_input ) );
+            $rubric_editor .= html_writer::empty_tag('input', array( 'class' => 'hidden', "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => $qa->get_field_prefix() . "-rubfilling", "value" => $filling_input ) );
 
             // ********************************** //
 
