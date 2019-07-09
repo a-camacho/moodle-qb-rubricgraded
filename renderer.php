@@ -181,7 +181,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         /* TODO: Change hard-coded strings to language based strings */
         $prefix = html_writer::tag('div', html_writer::tag('div',
             html_writer::tag('label',
-                get_string('rubric', 'qbehaviour_rubricgraded')
+                get_string('rubric_with_mode', 'qbehaviour_rubricgraded', 'grading')
             )
         ));
 
@@ -256,14 +256,13 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
     }
 
-    /* Visiblement ça apparaît dans une prévisualisation de la question */
-
     /**
      * Display the manual comment, and a link to edit it, if appropriate.
      *
      * @param question_attempt $qa a question attempt.
      * @param question_display_options $options controls what should and should not be displayed.
      * @return string HTML fragment.
+     * @throws coding_exception
      */
     public function manual_comment(question_attempt $qa, question_display_options $options) {
         global $PAGE;
