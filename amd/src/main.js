@@ -8,7 +8,9 @@ define(['jquery'], function($) {
     return {
         init: function( maxmark, elementname ) {
 
+            //eslint-disable-next-line
             var escapedelementname = elementname.replace("\:", "\\\:");
+            //eslint-disable-next-line
             var escrubfillingname = escapedelementname.replace("-rubric", "-rubfilling");
 
             $( document ).ready(function() {
@@ -50,7 +52,7 @@ define(['jquery'], function($) {
                 /* Here Jquery variable needs to be escaped. TODO : Because ? */
                 $("#rubric-" + escapedelementname + " input:checked").each(function() {
 
-                    string = $(this).attr('id');
+                    var string = $(this).attr('id');
 
                     var criterion_value = string.match(/criteria-([^-]+)/)[1];
                     // var criterion = parseInt(criterion, 10);
@@ -108,6 +110,7 @@ define(['jquery'], function($) {
                     // Push checkbox_score into array
                     var checkbox_points_id = checkbox_id.slice(0,-11);
                     var automaticid = "#"+checkbox_points_id+"-score";
+                    //eslint-disable-next-line
                     var escapedautomaticid = automaticid.replace("\:", "\\\:");
 
                     var checkbox_points = $(escapedautomaticid).text();
