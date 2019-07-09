@@ -187,30 +187,15 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         // Get rubric definition
         $definition = $this->load_definition_from_id($rubric_id);
+        $rubric_options = json_decode($definition->options, 'true');
+        $criteria = $definition->rubric_criteria;
+
+        $mode = 4;
+        $values = array();
+        $values['criteria'] = array();
 
         // Get rubric renderer
         $rubric_renderer = new gradingform_rubric_renderer($PAGE, '');
-
-            $criteria = $definition->rubric_criteria;
-
-            // This gets options from rubric, in a string format
-            // $options = $definition->options;
-
-            $options = array(   'sortlevelsasc' => '1',
-                                'lockzeropoints' => '1',
-                                'alwaysshowdefinition' => '1',
-                                'showdescriptionteacher' => '1',
-                                'showdescriptionstudent' => '1',
-                                'showscoreteacher' => '1',
-                                'showscorestudent' => '1',
-                                'enableremarks' => '1',
-                                'showremarksstudent' => '1',
-                            );
-            $mode = 4;
-
-            // $values = null;
-            $values = array();
-            $values['criteria'] = array();
 
             // Get rubric filling data if exist
             $last_step = $qa->get_sequence_check_count()-1;
@@ -244,7 +229,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         echo '<br /><br />';
         */
 
-        $rubric_editor = $rubric_renderer->display_rubric($criteria, $options, $mode, $elementname, $values);
+        $rubric_editor = $rubric_renderer->display_rubric($criteria, $rubric_options, $mode, $elementname, $values);
 
         $rubric_editor .= html_writer::empty_tag('input', array( 'class' => 'hidden', "type" => "text", "id" => $qa->get_field_prefix() . "-rubfilling", "name" => $qa->get_field_prefix() . "-rubfilling", "value" => $filling_input ) );
 
