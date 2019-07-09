@@ -263,6 +263,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
      * @param question_display_options $options controls what should and should not be displayed.
      * @return string HTML fragment.
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function manual_comment(question_attempt $qa, question_display_options $options) {
         global $PAGE;
@@ -281,6 +282,11 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         $elementname = $qa->get_field_prefix();
         $elementname = $elementname . "-rubric";
 
+        // Get rubric parameters
+        $rubric_options = json_decode($definition->options, 'true');
+        $values = array();
+        $values['criteria'] = array();
+
         // ********************************** //
 
         if ($options->manualcomment == question_display_options::EDITABLE) {
@@ -293,22 +299,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
             // ********************************** //
 
-            $rubric_options = array(
-                'sortlevelsasc' => '1',
-                'lockzeropoints' => '1',
-                'alwaysshowdefinition' => '1',
-                'showdescriptionteacher' => '1',
-                'showdescriptionstudent' => '1',
-                'showscoreteacher' => '1',
-                'showscorestudent' => '1',
-                'enableremarks' => '1',
-                'showremarksstudent' => '1',
-            );
             $mode = 6;
-
-            // $values = null;
-            $values = array();
-            $values['criteria'] = array();
 
             // Get rubric filling data if exist
             $last_step = $qa->get_sequence_check_count()-1;
@@ -338,31 +329,22 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
         } else {
 
-            // ********************************** //
-
-            $rubric_options = array(
-                'sortlevelsasc' => '1',
-                'lockzeropoints' => '1',
-                'alwaysshowdefinition' => '1',
-                'showdescriptionteacher' => '1',
-                'showdescriptionstudent' => '1',
-                'showscoreteacher' => '1',
-                'showscorestudent' => '1',
-                'enableremarks' => '1',
-                'showremarksstudent' => '1',
-            );
-            $mode = 5;
-            $values = array();
-            $values['criteria'] = array();
-
-            $rubric_editor = $rubric_renderer->display_rubric($criteria, $rubric_options, $mode, $elementname, $values);
-
-            // ********************************** //
-
             $output = '';
-            $content = get_string('rubric_with_mode', 'qbehaviour_rubricgraded', 'review, no manual comment');
-            $content .= $rubric_editor;
-            $output .= html_writer::tag('h4', "Rubric", array( 'class' => 'accesshide' ) ) . $content;
+            $content = '';
+
+            // Check if option to "alwayshowrubric" is enabled (1) or disabled (null)
+
+            if ( $rubric_options['alwaysshowdefinition'] == '1' ) {
+
+                $mode = 5;
+                $rubric_editor = $rubric_renderer->display_rubric($criteria, $rubric_options, $mode, $elementname, $values);
+
+                $content .= get_string('rubric_with_mode', 'qbehaviour_rubricgraded', 'review, no manual comment');
+                $content .= $rubric_editor;
+
+                $output .= html_writer::tag('h4', "Rubric", array( 'class' => 'accesshide' ) ) . $content;
+
+            }
 
             return $output;
 
@@ -390,6 +372,10 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
      * Loads the rubric form definition if it exists
      *
      * There is a new array called 'rubric_criteria' appended to the list of parent's definition properties.
+     *
+     * @param $id
+     * @return bool|stdClass
+     * @throws dml_exception
      */
     protected function load_definition_from_id($id) {
         global $DB;
@@ -399,8 +385,9 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
                   FROM {grading_definitions} gd
              LEFT JOIN {gradingform_rubric_criteria} rc ON (rc.definitionid = :rubricid)
              LEFT JOIN {gradingform_rubric_levels} rl ON (rl.criterionid = rc.id)
+                 WHERE gd.id = :rubricid_bis AND gd.method = :method
               ORDER BY rc.sortorder,rl.score";
-        $params = array('rubricid' => $id, 'method' => 'rubricgraded');
+        $params = array('rubricid' => $id, 'rubricid_bis' => $id, 'method' => 'rubric');
 
         $rs = $DB->get_recordset_sql($sql, $params);
 
