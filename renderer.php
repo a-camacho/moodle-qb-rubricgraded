@@ -173,12 +173,6 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
                 ), array('class' => 'fitem'));
         }
 
-        /* TODO : Find if there is a cleaner (more up) way to show the rubrics */
-        $cmid = $PAGE->cm->id;
-        $context = $PAGE->context;
-        $rubric_id = intval($qa->get_question()->rubricid);
-
-        /* TODO: Change hard-coded strings to language based strings */
         $prefix = html_writer::tag('div', html_writer::tag('div',
             html_writer::tag('label',
                 get_string('rubric_with_mode', 'qbehaviour_rubricgraded', 'grading')
@@ -186,6 +180,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         ));
 
         // Get rubric definition
+        $rubric_id = intval($qa->get_question()->rubricid);
         $definition = $this->load_definition_from_id($rubric_id);
         $rubric_options = json_decode($definition->options, 'true');
         $criteria = $definition->rubric_criteria;

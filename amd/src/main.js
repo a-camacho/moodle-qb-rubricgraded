@@ -3,7 +3,9 @@
  */
 
 define(['jquery'], function($) {
-    /* TODO : How to fix some Javascript variables so we can use them in each function without recreation */
+
+    /* TODO: We should maybe calculate filling JSON only once, when clicking on save button */
+    /* TODO: Should max points be getted from php function with rubric id ? */
 
     return {
         init: function( maxmark, elementname ) {
@@ -13,6 +15,7 @@ define(['jquery'], function($) {
             //eslint-disable-next-line
             var escrubfillingname = escapedelementname.replace("-rubric", "-rubfilling");
 
+            // Calculate scores at document.ready
             $( document ).ready(function() {
                 var maxPoints = getMaxPoints();
                 var totalPoints = calculatePoints();
@@ -21,46 +24,31 @@ define(['jquery'], function($) {
                 $("#totalScoreDecimal").html( calculateDecimalTotal( totalPoints, maxPoints ) );
             });
 
-            /* Here Jquery variable needs to be escaped. TODO : Because ? */
+            // Calculate scores and generate JSON at every input.change
             $('input[name^="'+escapedelementname+'"]').change(function () {
-
                 if (this.checked) {
-
                     var totalPoints = calculatePoints();
                     var maxPoints = getMaxPoints();
                     var totalMark = calculateDecimalTotal( totalPoints, maxPoints );
-
                     $("#totalPoints").html( totalPoints + '/' + maxPoints );
                     $("#totalScoreDecimal").html( totalMark );
                     $("div#totalMark input").first().val( totalMark );
-
                     $('#' + escrubfillingname).val( generateFillingJSON() );
-
                 }
             });
 
-            /* Here Jquery variable needs to be escaped. TODO : Because ? */
+            // Generate JSON at every textarea.change
             $('textarea[name^="'+escapedelementname+'"]').change(function () {
                 $('#' + escrubfillingname).val( generateFillingJSON() );
             });
 
-            /* TODO: We should maybe calculate filling JSON only once, when clicking on save button */
             var generateFillingJSON = function() {
-
                 var rubric_filling = [];
-
-                /* Here Jquery variable needs to be escaped. TODO : Because ? */
                 $("#rubric-" + escapedelementname + " input:checked").each(function() {
-
                     var string = $(this).attr('id');
-
                     var criterion_value = string.match(/criteria-([^-]+)/)[1];
-                    // var criterion = parseInt(criterion, 10);
                     var level_value = string.match(/levels-([^-]+)/)[1];
-
                     var remark = $("#" + escapedelementname + "-criteria-" + criterion_value + "-remark").val();
-
-                    // console.log("criterion is " + criterion + " and level is " + level);
 
                     var criterion = {};
                     criterion.criterion = criterion_value;
@@ -68,19 +56,13 @@ define(['jquery'], function($) {
                     criterion.remark = remark;
 
                     rubric_filling.push(criterion);
-
                 });
-
                 return JSON.stringify(rubric_filling);
-
             };
 
-            /* TODO: Should max points be getted from php function with rubric id ? */
             var getMaxPoints = function() {
-
                 var maxPointsArray = [];
 
-                /* Here Jquery variable does not need to be escaped. TODO : Why ? */
                 $('td.last[id^="' + elementname + '-criteria"]').each(function() {
                     var maxCriterionPoints = $(this).find("span.scorevalue").text();
                     maxPointsArray.push(Number(maxCriterionPoints));
@@ -98,7 +80,6 @@ define(['jquery'], function($) {
             };
 
             var calculatePoints = function() {
-
                 var pointsArray = [];
                 var total = 0;
 
@@ -127,11 +108,9 @@ define(['jquery'], function($) {
                 }
 
                 return total;
-
             };
 
             var calculateDecimalTotal = function( totalPoints, maxPoints ) {
-
                 var totalRounded;
                 var totalDecimal;
                 var maximumMark = maxmark;
@@ -149,9 +128,7 @@ define(['jquery'], function($) {
                 totalRounded = totalRounded.toFixed(2);
 
                 return totalRounded;
-
             }
-
         }
     };
 });
