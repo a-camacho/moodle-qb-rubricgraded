@@ -37,6 +37,12 @@ define(['jquery'], function($) {
                 }
             });
 
+            /* Here Jquery variable needs to be escaped. TODO : Because ? */
+            $('textarea[name^="'+escapedelementname+'"]').change(function () {
+                $('#' + escrubfillingname).val( generateFillingJSON() );
+            });
+
+            /* TODO: We should maybe calculate filling JSON only once, when clicking on save button */
             var generateFillingJSON = function() {
 
                 var rubric_filling = [];
