@@ -25,8 +25,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qbehaviour_rubricgraded';
-$plugin->version   = 2019070300;
-
+$plugin->version   = 2019071000;
 $plugin->requires  = 2019051100;
-
-$plugin->maturity  = MATURITY_STABLE;
+$plugin->maturity  = MATURITY_BETA;

@@ -29,7 +29,6 @@ class qbehaviour_rubricgraded_type extends question_behaviour_type {
     }
 
     public function get_unused_display_options() {
-        return array('correctness', 'marks', 'specificfeedback', 'generalfeedback',
-                'rightanswer');
+        return array('correctness', 'marks', 'specificfeedback', 'generalfeedback', 'rightanswer');
     }
 }

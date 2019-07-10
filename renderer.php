@@ -331,8 +331,6 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         }
     }
 
-    /* Visiblement ça apparaît dans une prévisualisation de la question */
-
     public function manual_comment_view(question_attempt $qa, question_display_options $options) {
         $output = '';
         if ($qa->has_manual_comment()) {
