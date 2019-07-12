@@ -54,8 +54,9 @@ _NB : If a rubric is deleted from an activity and has not been saved as template
 
 ## Moodle Version
 
-Supported is Moodle v3. Not tested with Moodle v2.
+Support for Moodle 3.0+  
+Not tested with Moodle 2.0+
 
 ## Copyright
 
-[André Camacho](https://www.camacho.pt) pour l'[Université de Genève](https://www.unige.ch/)
+[André Camacho](https://www.camacho.pt) for [Geneva's University](https://www.unige.ch/).
