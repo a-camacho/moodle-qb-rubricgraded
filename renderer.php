@@ -317,6 +317,17 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
             if ( $rubric_options['alwaysshowdefinition'] == '1' ) {
 
                 $mode = 5;
+
+                // Get rubric filling data if exist
+                $last_step = $qa->get_sequence_check_count()-1;
+                $step = $qa->get_step($last_step);
+                $filling_input = $step->get_behaviour_var('rubfilling');
+                $filling_array = $this->get_rubric_filling_array($values, $filling_input);
+
+                if ( !empty($filling_array) ) {
+                    $values = $filling_array;
+                }
+
                 $rubric_editor = $rubric_renderer->display_rubric($criteria, $rubric_options, $mode, $elementname, $values);
 
                 $content .= get_string('rubric_with_mode', 'qbehaviour_rubricgraded', 'review, no manual comment');
