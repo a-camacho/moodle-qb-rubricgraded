@@ -316,7 +316,7 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
 
             if ( $rubric_options['alwaysshowdefinition'] == '1' ) {
 
-                $mode = 5;
+                $mode = 8;
 
                 // Get rubric filling data if exist
                 $last_step = $qa->get_sequence_check_count()-1;
