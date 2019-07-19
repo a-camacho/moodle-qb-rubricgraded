@@ -238,8 +238,9 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         $fieldset = html_writer::tag('fieldset', html_writer::tag('div', $comment . $mark,
             array('class' => 'fcontainer clearfix')), array('class' => 'hidden'));
 
-        return  $prefix . $rubric_editor . $total_score . html_writer::empty_tag('br') . $total_score_decimal .
-            html_writer::empty_tag('br') . html_writer::empty_tag('br') . $fieldset;
+        $output = $prefix . $rubric_editor . $fieldset;
+
+        return $output;
 
     }
 
