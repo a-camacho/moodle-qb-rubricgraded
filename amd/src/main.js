@@ -60,26 +60,6 @@ define(['jquery'], function($) {
                 return JSON.stringify(rubric_filling);
             };
 
-            /* Unused function since maxpoints are passed by the renderer */
-            var getMaxPoints = function() {
-                var maxPointsArray = [];
-
-                $('td.last[id^="' + elementname + '-criteria"]').each(function() {
-                    var maxCriterionPoints = $(this).find("span.scorevalue").text();
-                    maxPointsArray.push(Number(maxCriterionPoints));
-                });
-
-                if(maxPointsArray.length > 0){
-                    var total = 0;
-                    for (var i = 0; i < maxPointsArray.length; i++) {
-                        total += maxPointsArray[i] << 0;
-                    }
-                    return total;
-                } else {
-                    return 0;
-                }
-            };
-
             var calculatePoints = function() {
                 var pointsArray = [];
                 var total = 0;
