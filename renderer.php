@@ -207,8 +207,10 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
                 $values = $filling_array;
             }
 
+        /*
         $total_score = html_writer::tag('label', 'Total points : ' . html_writer::tag('span', '0', array('class' => 'total_points', 'id' => 'totalPoints') ) );
         $total_score_decimal = html_writer::tag('label', 'Total score (max ' . html_writer::tag('span', $maximum_mark, array('class' => 'maximum_mark', 'id' => 'maximumMark') ) . ') : ' . html_writer::tag('span', '0', array('class' => 'total_score_decimal', 'id' => 'totalScoreDecimal') ) );
+        */
 
         // Debug information
         /*
