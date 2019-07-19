@@ -8,7 +8,7 @@ define(['jquery'], function($) {
     /* TODO: Should max points be getted from php function with rubric id ? */
 
     return {
-        init: function( maxmark, elementname ) {
+        init: function( maxmark, elementname, maxpoints ) {
 
             //eslint-disable-next-line
             var escapedelementname = elementname.replace("\:", "\\\:");
@@ -17,7 +17,7 @@ define(['jquery'], function($) {
 
             // Calculate scores at document.ready
             $( document ).ready(function() {
-                var maxPoints = getMaxPoints();
+                var maxPoints = maxpoints;
                 var totalPoints = calculatePoints();
 
                 $("#totalPoints").html( totalPoints + '/' + maxPoints );
@@ -28,7 +28,7 @@ define(['jquery'], function($) {
             $('input[name^="'+escapedelementname+'"]').change(function () {
                 if (this.checked) {
                     var totalPoints = calculatePoints();
-                    var maxPoints = getMaxPoints();
+                    var maxPoints = maxpoints;
                     var totalMark = calculateDecimalTotal( totalPoints, maxPoints );
                     $("#totalPoints").html( totalPoints + '/' + maxPoints );
                     $("#totalScoreDecimal").html( totalMark );
@@ -60,6 +60,7 @@ define(['jquery'], function($) {
                 return JSON.stringify(rubric_filling);
             };
 
+            /* Unused function since maxpoints are passed by the renderer */
             var getMaxPoints = function() {
                 var maxPointsArray = [];
 
@@ -94,10 +95,36 @@ define(['jquery'], function($) {
                     //eslint-disable-next-line
                     var escapedautomaticid = automaticid.replace("\:", "\\\:");
 
-                    var checkbox_points = $(escapedautomaticid).text();
+                    // Check if score div tag exists
+                    var scoreid = document.getElementById(escapedautomaticid);
+                    var checkbox_points = '';
 
-                    checkbox_points = Number(checkbox_points);
-                    pointsArray.push(checkbox_points);
+                    // If it exists, get score from there
+                    if (typeof(scoreid) != 'undefined' && scoreid != null) {
+
+                        checkbox_points = $(escapedautomaticid).text();
+                        checkbox_points = Number(checkbox_points);
+                        pointsArray.push(checkbox_points);
+
+                    // If it doesn't exist, get score label-aria
+                    } else {
+
+                        var element_id = "#"+checkbox_points_id;
+
+                        //eslint-disable-next-line
+                        element_id = element_id.replace("\:", "\\\:");
+
+                        var score_string = $(element_id);
+                        score_string = score_string.attr("aria-label");
+                        score_string = score_string.split(", ");
+                        score_string = score_string.pop();
+                        score_string = score_string.split(" ");
+                        score_string = score_string[0];
+
+                        checkbox_points = Number(score_string);
+                        pointsArray.push(checkbox_points);
+
+                    }
 
                 });
 

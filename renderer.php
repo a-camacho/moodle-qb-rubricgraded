@@ -58,13 +58,8 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         require_once($CFG->dirroot.'/lib/filelib.php');
         require_once($CFG->dirroot.'/repository/lib.php');
 
-        // Require JS for calculating total score
-        $maximum_mark = ($qa->get_max_mark() ? $qa->get_max_mark() : null );
-
         $elementname = $qa->get_field_prefix();
         $elementname = $elementname . "-rubric";
-
-        $PAGE->requires->js_call_amd('qbehaviour_rubricgraded/main', 'init', array( $maximum_mark, $elementname ) );
 
         $inputname = $qa->get_behaviour_field_name('comment');
         $id = $inputname . '_id';
@@ -184,6 +179,16 @@ class qbehaviour_rubricgraded_renderer extends qbehaviour_renderer {
         $definition = $this->load_definition_from_id($rubric_id);
         $rubric_options = json_decode($definition->options, 'true');
         $criteria = $definition->rubric_criteria;
+
+        // Require JS for calculating total score
+        $maximum_mark = ($qa->get_max_mark() ? $qa->get_max_mark() : null );
+
+        $max_points = 0;
+        foreach ( $definition->rubric_criteria as $my_criteria ) {
+            $max_points = $max_points + end($my_criteria['levels'])['score'];
+        }
+
+        $PAGE->requires->js_call_amd('qbehaviour_rubricgraded/main', 'init', array( $maximum_mark, $elementname, $max_points ) );
 
         $mode = 4;
         $values = array();
